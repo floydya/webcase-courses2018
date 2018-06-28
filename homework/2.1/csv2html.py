@@ -5,8 +5,6 @@ maxwidth = 100
 format = ".0f"
 
 def process_options():
-    global maxwidth
-    global format
     if len(sys.argv) > 1:
         if sys.argv[1] in ("-h", "--help"):
             print("usage: {0} [maxwidth=int] [format=str] < infile.csv > outfile.html".format(sys.argv[0]))
@@ -32,6 +30,7 @@ def process_options():
                 format = str(sys.argv[2].strip('format='))
             except:
                 format = ".0f"
+    return maxwidth, format
 
 
 def main():
