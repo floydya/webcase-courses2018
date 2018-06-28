@@ -1,9 +1,6 @@
 import sys
 from xml.sax.saxutils import escape
 
-maxwidth = 100
-format = ".0f"
-
 def process_options():
     if len(sys.argv) > 1:
         if sys.argv[1] in ("-h", "--help"):
@@ -34,7 +31,7 @@ def process_options():
 
 
 def main():
-    process_options()
+    maxwidth, format = process_options()
     print_start()
     count = 0
     while True:
