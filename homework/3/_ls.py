@@ -20,7 +20,7 @@ def main():
             if filename in os.listdir(path="."):
                 file = open(filename)
                 arr = file.readlines()
-                process_file(file)
+                process_file(arr)
             else:
                 f = open(filename,"w+")
                 f.close()
