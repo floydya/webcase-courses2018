@@ -38,7 +38,7 @@ def process_file(file, empty=False):
             else:
                 print('Error: invalid action -> enter one of "AaQq"')
     if not empty:
-        for index, line in enumerate(file.readlines(), 1):
+        for index, line in enumerate(file, 1):
             print('{}. {}'.format(index, line.strip()))
         while True:
             action = input('[A]dd [D]elete [S]ave [Q]uit [a/d/s/q]: ')
