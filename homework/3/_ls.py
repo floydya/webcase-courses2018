@@ -18,12 +18,16 @@ def main():
         else:
             filename = input('Enter file name here: ')
             if filename in os.listdir(path="."):
-                process_file(filename)
+                file = open(filename)
+                process_file(file)
             else:
-                process_file(filename, empty=True)
+                f = open(filename,"w+")
+                f.close()
+                file = open(filename)
+                process_file(file, empty=True)
 
 
-def process_file(filename, empty=False):
+def process_file(file, empty=False):
     if empty:
         f = open(filename,"w+")
         f.close()
