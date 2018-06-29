@@ -25,6 +25,8 @@ def main():
 
 def process_file(filename, empty=False):
     if empty:
+        f = open(filename,"c")
+        f.close()
         print("-- no items in the list --")
         while True:
             action = input('[A]dd [Q]uit [a/q]: ')
