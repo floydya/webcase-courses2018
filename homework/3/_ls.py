@@ -24,13 +24,12 @@ def main():
 
 
 def process_file(filename, empty=False):
-    file = open(filename,"r+")
     if empty:
         print("-- no items in the list --")
         while True:
             action = input('[A]dd [Q]uit [a/q]: ')
             if action in ('AaQq'):
-                func(action, file)
+                func = action
                 break
             else:
                 print('Error: invalid action -> enter one of "AaQq"')
@@ -40,10 +39,12 @@ def process_file(filename, empty=False):
         while True:
             action = input('[A]dd [D]elete [S]ave [Q]uit [a/d/s/q]: ')
             if action in ('AaDdSsQq'):
-                func(action, file)
+                func = action
                 break
             else:
                 print('Error: invalid action -> enter one of "AaDdSsQq"')
+    file = open(filename,"r+")
+    func(func, file)
 
 
 def func(action, file):
