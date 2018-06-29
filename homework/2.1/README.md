@@ -1,4 +1,4 @@
-python print_unicode.py [string [string [string ...]]]<br />
+<code>python print_unicode.py [string [string [string ...]]]</code><br />
     Запринтить юникод символы с вхождением [string] в название.<br />
 python quadratic.py<br />
     Рассчет квадратного уравнения.<br />
