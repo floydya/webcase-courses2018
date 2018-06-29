@@ -24,8 +24,8 @@ def main():
 
 
 def process_file(filename, empty=False):
+    file = open(filename,"r+")
     if empty:
-        file = open(filename,"w+")
         print("-- no items in the list --")
         while True:
             action = input('[A]dd [Q]uit [a/q]: ')
@@ -35,7 +35,6 @@ def process_file(filename, empty=False):
             else:
                 print('Error: invalid action -> enter one of "AaQq"')
     if not empty:
-        file = open(filename)
         for index, line in enumerate(file, 1):
             print('{}. {}'.format(index, line.strip()))
         while True:
