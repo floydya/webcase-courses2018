@@ -18,8 +18,10 @@ def main():
         else:
             filename = input('Enter file name here: ')
             if filename in os.listdir(path="."):
-                file = open(filename)
-                arr = file.readlines()
+                arr = []
+                with open(filename) as file:
+                    for line in file:
+                        arr.append(line.strip())
                 process_file(arr)
             else:
                 f = open(filename,"w+")
