@@ -45,7 +45,7 @@ def process_file(filename, empty=False):
                 break
             else:
                 print('Error: invalid action -> enter one of "AaDdSsQq"')
-    file = open(filename,"r+")
+    file = open(filename,"w+")
     func(func, file)
 
 
