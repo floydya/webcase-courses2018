@@ -29,8 +29,6 @@ def main():
 
 def process_file(file, empty=False):
     if empty:
-        f = open(filename,"w+")
-        f.close()
         print("-- no items in the list --")
         while True:
             action = input('[A]dd [Q]uit [a/q]: ')
@@ -49,7 +47,6 @@ def process_file(file, empty=False):
                 break
             else:
                 print('Error: invalid action -> enter one of "AaDdSsQq"')
-    file = open(filename,"r+")
     func(func, file)
 
 
