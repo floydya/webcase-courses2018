@@ -24,7 +24,7 @@ def main():
 
 
 def process_file(filename, empty=False):
-    file = open(filename,"rw")
+    file = open(filename,"r+")
     if empty:
         print("-- no items in the list --")
         while True:
