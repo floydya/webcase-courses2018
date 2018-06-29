@@ -26,7 +26,6 @@ def main():
             else:
                 f = open(filename,"w+")
                 f.close()
-                file = open(filename)
                 arr = []
                 process_file(arr, empty=True)
 
