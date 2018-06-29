@@ -25,7 +25,7 @@ def main():
 
 def process_file(filename, empty=False):
     if empty:
-        f = open(filename,"c")
+        f = open(filename,"w+")
         f.close()
         print("-- no items in the list --")
         while True:
@@ -45,7 +45,7 @@ def process_file(filename, empty=False):
                 break
             else:
                 print('Error: invalid action -> enter one of "AaDdSsQq"')
-    file = open(filename,"w+")
+    file = open(filename,"r+")
     func(func, file)
 
 
