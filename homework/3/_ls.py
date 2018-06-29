@@ -52,7 +52,7 @@ def process_file(array, empty=False):
     func(func, array)
 
 
-def func(action, file):
+def func(action, array):
     if action in 'Aa':
         input('Enter new line: ')
     elif action in 'Dd':
