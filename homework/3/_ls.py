@@ -54,10 +54,12 @@ def func(action, file):
     if action in 'Aa':
         input('Enter new line: ')
     elif action in 'Dd':
-        pass
+        print('del')
     elif action in 'Ss':
+        print('save')
         file.flush()
     else:
+        print('close')
         file.close()
         sys.exit()
 
