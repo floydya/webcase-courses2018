@@ -27,7 +27,7 @@ def main():
                 f = open(filename,"w+")
                 f.close()
                 file = open(filename)
-                arr = file.readlines()
+                arr = []
                 process_file(arr, empty=True)
 
 
