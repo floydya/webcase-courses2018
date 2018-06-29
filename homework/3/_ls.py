@@ -19,15 +19,17 @@ def main():
             filename = input('Enter file name here: ')
             if filename in os.listdir(path="."):
                 file = open(filename)
+                arr = file.readlines()
                 process_file(file)
             else:
                 f = open(filename,"w+")
                 f.close()
                 file = open(filename)
-                process_file(file, empty=True)
+                arr = file.readlines()
+                process_file(arr, empty=True)
 
 
-def process_file(file, empty=False):
+def process_file(array, empty=False):
     if empty:
         print("-- no items in the list --")
         while True:
