@@ -77,7 +77,7 @@ def edit_file(file_lines_array):
         print("-- no items in the list --")
         what_to_do = get_string("[A]dd [Q]uit [empty line = a]", default="a")
     else:
-        for line_id, line in enumerate(file_lines_array, 1):
+        for line_id, line in enumerate(sorted(file_lines_array), 1):
             print("{}. {}".format(line_id, line))
         what_to_do = get_string("[A]dd [D]elete [S]ave [Q]uit [empty line = a]", default="a")
     return what_to_do
