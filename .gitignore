@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE files
+.idea/
+<<<<<<< HEAD
+.vscode/
+=======
+.vscode/
+>>>>>>> bc0f658be863a7286cbb354f5835c5809cf65f99
