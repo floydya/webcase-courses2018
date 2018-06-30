@@ -1,4 +1,4 @@
 <h1>TODO:</h1>
-- get lines from file
-- print lines ^
-- add, delete funcs
+- <b>+</b> get lines from file
+- <b>+</b> print lines ^
+- <b>+</b> add, delete funcs
