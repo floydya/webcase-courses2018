@@ -223,33 +223,20 @@ class Image:
     def resize(self, width=None, height=None):
         attr_width, attr_height = False, False
         if not width:
-            if width == self.__width:
-                attr_width = True
-            elif width < self.__width:
+            if width < self.__width:
                 for x in range(width, self.__width):
                     for y in range(self.__height):
                         del self[x, y]
-                attr_width = True
-            else:
-                for x in range(self.__width, width):
-                    for y in range(self.__height):
-                        set
-                attr_width = True
+            attr_width = True
         if not height:
-            if height == self.__height:
-                attr_height = True
             if height < self.__height:
                 for y in range(height, self.__height):
                     for x in range(self.__width):
-                        del self[x, y]
-                attr_height = True
-            else:
-                for y in range(self.__height, height):
-                    for x in range(self.__width):
-                        self[x, y]
-                attr_height = True
-        
-
+                        del self[x, y]                
+            self.__height = height
+        self.__colors = (set(self.__data.values()) |
+                             {self.__background})
+        return attr_width and attr_height
 
 
     def export(self, filename):
