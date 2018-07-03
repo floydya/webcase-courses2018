@@ -45,6 +45,8 @@ def print_list(dirs_list, order, hidden=False, modified=False, sizes=False):
             order_by = lambda x: x[1]
         else:
             order_by = lambda x: x[2]
+    else:
+        order_by = lambda x: x[0]
     for item in sorted(dirs_list, key=order_by):
         line = ""
         if modified:
