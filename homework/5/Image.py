@@ -221,22 +221,27 @@ class Image:
 
 
     def resize(self, width=None, height=None):
-        attr_width, attr_height = False, False
-        if not width:
-            if width < self.__width:
-                for x in range(width, self.__width):
-                    for y in range(self.__height):
-                        del self[x, y]
-            attr_width = True
-        if not height:
-            if height < self.__height:
-                for y in range(height, self.__height):
-                    for x in range(self.__width):
-                        del self[x, y]                
-            self.__height = height
-        self.__colors = (set(self.__data.values()) |
-                             {self.__background})
-        return attr_width and attr_height
+        """Resize the image
+        >>> image = Image(10, 10)
+        >>> image.resize(5, 5)
+        True
+        """
+        try:
+            if not width:
+                if width < self.__width:
+                    for x in range(width, self.__width):
+                        for y in range(self.__height):
+                            del self[x, y]
+            if not height:
+                if height < self.__height:
+                    for y in range(height, self.__height):
+                        for x in range(self.__width):
+                            del self[x, y]
+            self.__colors = (set(self.__data.values()) |
+                                {self.__background})
+            return True
+        except IndexError:
+            return False
 
 
     def export(self, filename):
