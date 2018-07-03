@@ -1,13 +1,57 @@
 from optparse import OptionParser
-import os, sys
+import os, sys, datetime
 
 
 parser = OptionParser()
-parser.add_option("-H", "--hidden", action="store_false", help="show hidden files [default: off]")
-parser.add_option("-m", "--modified", action="store_false", help="show last modified date/time [default: off]")
-parser.add_option("-o", "--order", action="store", default='name', help="order by ('name', 'n', 'modified', 'm', 'size', 's') [default: name]")
-parser.add_option("-r", "--recursive", action="store_false", help="recurse into subdirectories [default: off]")
-parser.add_option("-s", "--sizes", action="store_false", help="show sizes [default: off]")
-
+parser.add_option("-H", "--hidden", action="store_true", dest="hidden", help="show hidden files [default: off]")
+parser.add_option("-m", "--modified", dest="modified", action="store_true", help="show last modified date/time [default: off]")
+parser.add_option("-o", "--order", dest="order", type="str", help="order by ('name', 'n', 'modified', 'm', 'size', 's') [default: name]")
+parser.add_option("-r", "--recursive", dest="recursive", action="store_true", help="recurse into subdirectories [default: off]")
+parser.add_option("-s", "--sizes", dest="sizes", action="store_true", help="show sizes [default: off]")
+parser.set_defaults(order='name')
 
 (options, args) = parser.parse_args()
+args = "." if not args else args[0]
+dirs = []
+the_best_of_the_best = []
+#print(entry.name, os.stat(entry.name).st_size, datetime.datetime.fromtimestamp(os.path.getmtime(entry.name)).strftime("%Y-%m-%d %H-%M-%S"))
+# ([name, size, date], [name, size, date])
+# for i in tuple:
+#     name = i[0]
+#     size = i[1]
+#     date = i[2]
+
+
+if not options.recursive:
+    with os.scandir(".") as it:
+        for entry in it:
+            #if not entry.name.startswith('.'):
+                #dirs.append(entry.name)
+            the_best_of_the_best.append([entry.name, os.stat(entry.name).st_size, datetime.datetime.fromtimestamp(os.path.getmtime(entry.name)).strftime("%Y-%m-%d %H-%M-%S")])
+else:
+    # ne rabotaet tak kak nado
+    dirs = os.walk(args)
+    for obj in dirs:
+        for item in obj[1:]:
+            for name in item:
+                if not name.startswith('.'):
+                    print(".\\" + name)
+    
+def print_list(dirs_list, order, hidden=False, modified=False, sizes=False):
+    if order in ('name', 'n', 'modified', 'm', 'size', 's'):
+        if order in ('name', 'n'):
+            order_by = lambda x: x[0]
+        elif order in ('size', 's'):
+            order_by = lambda x: x[1]
+        else:
+            order_by = lambda x: x[2]
+    for item in sorted(dirs_list, key=order_by):
+        line = ""
+        if modified:
+            line += str(item[2]) + "\t"
+        if sizes:
+            line += str(item[1]) + "\t"
+        line += item[0]
+        print(line)
+
+print_list(the_best_of_the_best, options.order, options.hidden, options.modified, options.sizes)
