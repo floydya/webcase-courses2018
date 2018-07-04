@@ -16,12 +16,6 @@ Transaction(7, date_now, RUB, 3, None)
 >>> a.usd
 21
 """
-#>>> a = Transaction(5, "date")
-#>>> a.amount = -2
-#>>> a
-#Traceback (most recent call last):
-#...
-#AssertionError: amount must be nonzero and non-negative
 
 class Transaction():
 
@@ -52,7 +46,6 @@ class Transaction():
 
     @amount.setter
     def amount(self, amount):
-        assert amount > 0, "amount must be nonzero and non-negative"
         self.__amount = amount
 
     @property
