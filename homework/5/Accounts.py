@@ -22,6 +22,7 @@ new_name
 
 class Accounts():
 
+
     def __init__(self, name):
         self.__id = len(acc_list)+1
         self.__name = name
@@ -33,9 +34,11 @@ class Accounts():
     def id(self):
         return self.__id
 
+
     @property
     def name(self):
         return self.__name
+
 
     @name.setter
     def name(self, name):
@@ -58,12 +61,35 @@ class Accounts():
             balance += i.amount
         return balance
 
+
     @property
     def all_usd(self):
         for tr in self.__transactions:
             if tr.currency != "USD":
                 return False
         return True
+
+
+    def apply(self, other):
+        """
+        >>> t = Transactions.Transaction(5, "date")
+        >>> a = Accounts("username")
+        >>> a.apply(t)
+        >>> a.balance
+        5
+        """
+        assert isinstance(other, Transactions.Transaction), "this object is not Transaction example"
+        self.__transactions.append(other)
+
+
+    
+    def save(self):
+        pass
+
+
+    def load(self):
+        pass
+
 
 if __name__ == "__main__":
     import doctest
