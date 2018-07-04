@@ -14,7 +14,7 @@ parser.set_defaults(order='name')
 args = "." if not args else args[0]
 dirs = []
 the_best_of_the_best = []
-#print(entry.name, os.stat(entry.name).st_size, datetime.datetime.fromtimestamp(os.path.getmtime(entry.name)).strftime("%Y-%m-%d %H-%M-%S"))
+
 # ([name, size, date], [name, size, date])
 # for i in tuple:
 #     name = i[0]
@@ -25,19 +25,18 @@ the_best_of_the_best = []
 if not options.recursive:
     with os.scandir(".") as it:
         for entry in it:
-            #if not entry.name.startswith('.'):
-                #dirs.append(entry.name)
+            if not options.hidden and entry.name.startswith("."):
+                continue
             the_best_of_the_best.append([entry.name, os.stat(entry.name).st_size, datetime.datetime.fromtimestamp(os.path.getmtime(entry.name)).strftime("%Y-%m-%d %H-%M-%S")])
 else:
-    # ne rabotaet tak kak nado
     dirs = os.walk(args)
     for obj in dirs:
-        for item in obj[1:]:
-            for name in item:
-                if not name.startswith('.'):
-                    print(".\\" + name)
+        for i in obj[2]:
+            the_best_of_the_best.append(["{}/{}".format(obj[0], i).replace("\\", "/"), 
+                                        os.stat("{}/{}".format(obj[0], i).replace("\\", "/")).st_size,
+                                        datetime.datetime.fromtimestamp(os.path.getmtime("{}/{}".format(obj[0], i).replace("\\", "/"))).strftime("%Y-%m-%d %H-%M-%S")])
     
-def print_list(dirs_list, order, hidden=False, modified=False, sizes=False):
+def print_list(dirs_list, order, modified=False, sizes=False):
     if order in ('name', 'n', 'modified', 'm', 'size', 's'):
         if order in ('name', 'n'):
             order_by = lambda x: x[0]
@@ -56,4 +55,4 @@ def print_list(dirs_list, order, hidden=False, modified=False, sizes=False):
         line += item[0]
         print(line)
 
-print_list(the_best_of_the_best, options.order, options.hidden, options.modified, options.sizes)
+print_list(the_best_of_the_best, options.order, options.modified, options.sizes)
