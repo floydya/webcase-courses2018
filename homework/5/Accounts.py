@@ -1,5 +1,7 @@
 
 import Transactions
+import pickle
+
 
 acc_list = []
 
@@ -77,18 +79,43 @@ class Accounts():
         >>> a.apply(t)
         >>> a.balance
         5
+        >>> len(a)
+        1
         """
         assert isinstance(other, Transactions.Transaction), "this object is not Transaction example"
         self.__transactions.append(other)
 
 
-    
-    def save(self):
-        pass
+    def save(self, name):
+        """
+        >>> t = Transactions.Transaction(5, "date")
+        >>> a = Accounts("username")
+        >>> a.save('test')
+        Traceback (most recent call last):
+        ...
+        AssertionError: file must be .acc
+        >>> a.save('account1.acc')
+        True
+        """
+        assert name.endswith('.acc'), "file must be .acc"
+        with open(name, 'wb') as f:
+            pickle.dump(self, f)
+            return True
 
-
-    def load(self):
-        pass
+    @staticmethod
+    def load(name):
+        """
+        >>> a = Accounts.load('Accounts.py')
+        Traceback (most recent call last):
+        ...
+        AssertionError: file must be .acc
+        >>> a = Accounts.load('account1.acc')
+        >>> a.name
+        'username'
+        """
+        assert name.endswith('.acc'), "file must be .acc"
+        with open(name, 'rb') as f:
+            return pickle.load(f)
 
 
 if __name__ == "__main__":
