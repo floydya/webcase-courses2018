@@ -219,7 +219,7 @@ class BikeStock:
         index = len(self.__file)
         self.__file.append(_record_from_bike(bike))
         self.__index_from_identity[bike.identity] = index
-        
+
 
     def __delitem__(self, identity):
         "Deletes the stock record for the specified bike"
