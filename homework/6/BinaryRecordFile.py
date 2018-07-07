@@ -118,7 +118,7 @@ class BinaryRecordFile:
         """
         self.__seek_to_index(index)
         return self.__fh.read(self.record_size)
-        
+
 
     def __seek_to_index(self, index):
         if self.auto_flush:
