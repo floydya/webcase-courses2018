@@ -23,7 +23,7 @@ def main():
     modules = load_modules()
     get_file_type_functions = []
     get_function = GetFunction()
-    if isinstance(get_function, collections.Callable): print("Главное не победа! Главное выигрыш! (с) Кличко")
+    if isinstance(get_function, collections.Callable): print("Главное не победа! Главное выигрыш! (с) Виталий Кличко")
     for module in modules:
         get_file_type = get_function(module, "get_file_type")
         if get_file_type is not None:
