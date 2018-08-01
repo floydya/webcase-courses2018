@@ -7,6 +7,11 @@ class Xl:
     all = defaultdict(list)
 
     def __init__(self, *args, **kwargs):
+        """
+        item = Xl(*args, filename='filename.xlsx')
+        item.object[11] - артикул
+        item.object[15] - стоимость
+        """
         self.object = [*args]
         item = self.search(kwargs.get('filename'), self.object[11])
         if item:
@@ -15,12 +20,6 @@ class Xl:
             del self
         else:
             self.all[kwargs.get('filename')].append(self)
-
-    def __str__(self):
-        return str(self.object[11])
-
-    def __repr__(self):
-        return str(self.object[11])
 
     def search(self, filename, attr):
         it = self.all[filename]
@@ -31,6 +30,9 @@ class Xl:
 
     @classmethod
     def print_all(cls):
+        """
+        Вывести все итемы в "древовидном" стиле
+        """
         for key in Xl.all.keys():
             print(key, end='\n')
             for item in Xl.all[key]:
@@ -38,6 +40,9 @@ class Xl:
 
     @classmethod
     def equal(cls):
+        """
+        У старых - обновить стоимость, новые - записать в конец с итерацией ID
+        """
         old_list = []
         new_list = []
         first, second = cls.all.keys()
@@ -56,6 +61,9 @@ class Xl:
 
     @classmethod
     def load(cls, *args):
+        """
+        Загрузить файлы в словарь: ключ - название файла, значение - список строк
+        """
         for arg in args:
             file = openpyxl.load_workbook(filename=arg)
             for item in file['Products']:
@@ -64,6 +72,9 @@ class Xl:
 
     @classmethod
     def save(cls, object_list):
+        """
+        Записать список строк в новый файл
+        """
         wb = openpyxl.workbook.Workbook()
         ws = wb.worksheets[0]
         for row in range(1, len(object_list)+1):
