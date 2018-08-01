@@ -69,7 +69,6 @@ class Xl:
         for row in range(1, len(object_list)+1):
             for column in range(1, 42):
                 ws.cell(row=row, column=column).value = object_list[row-1].object[column-1]
-        print(tuple(ws.rows))
         wb.save('output.xlsx')
 
 
