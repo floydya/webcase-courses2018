@@ -1,0 +1,113 @@
+{% extends('base.html') %}
+
+{% block cards %}
+    {% if not request.GET.searching %}
+        <div class="ui text menu">
+            <div class="header item">Сортировка</div>
+            <a class="{% if request.GET.order != 'id' %}active{% endif %} item"
+               onclick="window.location.href='?order=id'">
+                По дате создания
+            </a>
+            <a class="{% if request.GET.order != 'likes' %}active{% endif %} item"
+               onclick="window.location.href='?order=likes'">
+                По лайкам
+            </a>
+        </div>
+    {% endif %}
+    <div class="ui items divided hidden-search">
+        {% if object_list %}
+            {% for article in object_list %}
+                <div class="item">
+                    <div class="image">
+                        <img src="
+
+                                {% if article.main_image %}{% if 'http' in article.main_image.url %}{{ article.main_image.name }}{% else %}{{ article.main_image.url }}{% endif %}{% else %}https://semantic-ui.com/images/wireframe/image.png{% endif %}">
+                    </div>
+                    <div class="content">
+                        <a href="{{ url('article-detail', args=[article.slug]) }}"
+                           class="header">{{ article.title }}</a>
+                        <div class="meta">
+                            <span>Категория: <b>{{ article.category }}</b></span>
+                            <span><i>{{ article.created_at|naturaltime }}</i></span>
+                            <span>by <a
+                                    href="{{ article.author.profile.get_absolute_url() }}">@{{ article.author.username }}</a></span>
+                            <span style="float: right;" class="ui label"><i class="icon eye"></i> {{ article.views }}&nbsp;&nbsp;&nbsp;<i
+                                    class="icon heart"></i> {{ article.likes.all().count() }}</span>
+                        </div>
+                        <div class="description">
+                            <p>{{ article.body|truncate(35) }}</p>
+                        </div>
+                        <div class="extra">
+                            {% for tag in article.tags.all() %}
+                                <a class="ui {{ [red, orange, yellow, olive, green, teal, blue, violet, purple, pink, brown, grey, black] | random }} tag label"
+                                   href="?tag={{ tag.name }}">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            No articles.
+        {% endif %}
+    </div>
+    {% if page_obj.has_other_pages() %}
+        <div class="ui large bottom fixed menu transition visible">
+            <div class="ui container" style="justify-content: center;">
+                <div class="item">
+                    <div class="ui pagination menu">
+                        {%- if request.GET.q %}
+                            {% set req = request.GET.q %}
+                            {% set request_type = 'q' %}
+                        {% elif request.GET.tag %}
+                            {% set req = request.GET.tag %}
+                            {% set request_type = 'tag' %}
+                        {% elif request.GET.category %}
+                            {% set req = request.GET.category %}
+                            {% set request_type = 'category' %}
+                        {% else %}
+                            {% set req = '' %}
+                            {% set request_type = '' %}
+                        {% endif -%}
+                        {% if request.GET.order %}
+                            {% set order = request.GET.order %}
+                        {% endif %}
+                        {% if page_obj.number != 1 %}
+                            <a class="item"
+                               href="?page=1{% if request_type %}&{{ request_type }}={{ req }}{% endif %}{% if order %}&order={{ order }}{% endif %}">
+                                1
+                            </a>
+                            <div class="disabled item">
+                                ...
+                            </div>
+                        {% endif %}
+                        {% if page_obj.number > 2 %}
+                            <a class="item"
+                               href="?page={{ page_obj.previous_page_number() }}{% if request_type %}&{{ request_type }}={{ req }}{% endif %}{% if order %}&order={{ order }}{% endif %}">
+                                {{ page_obj.previous_page_number() }}
+                            </a>
+                        {% endif %}
+                        <a class="disabled item">
+                            {{ page_obj.number }}
+                        </a>
+                        {% if page_obj.number+1 != page_obj.paginator.num_pages %}
+                            <a class="item"
+                               href="?page={{ page_obj.next_page_number() }}{% if request_type %}&{{ request_type }}={{ req }}{% endif %}{% if order %}&order={{ order }}{% endif %}">
+                                {{ page_obj.next_page_number() }}
+                            </a>
+                        {% endif %}
+                        {% if page_obj.number != page_obj.paginator.num_pages %}
+                            <div class="disabled item">
+                                ...
+                            </div>
+                            <a class="item"
+                               href="?page={{ page_obj.paginator.num_pages }}{% if request_type %}&{{ request_type }}={{ req }}{% endif %}{% if order %}&order={{ order }}{% endif %}">
+                                {{ page_obj.paginator.num_pages }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

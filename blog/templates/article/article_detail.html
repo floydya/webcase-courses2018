@@ -1,0 +1,160 @@
+{% extends('base.html') %}
+
+{% block styles %}
+    .centered-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+    }
+
+    .like-button {
+    border: 0;
+    background: transparent;
+    }
+
+    .ui.comments {
+    max-width: none;
+    }
+{% endblock %}
+
+{% block cards %}
+    <h1 class="ui header">{{ article.title }}</h1>
+    <img src="{{ article.main_image.name }}" class="centered-image">
+    <h5 class="ui">{{ article.body|safe }}</h5>
+    <div class="ui items">
+        <div class="item">
+            <a class="ui tiny image">
+                <img src="{% if 'http' in article.main_image.url %}{{ article.main_image.name }}{% else %}{{ article.main_image.url }}{% endif %}">
+            </a>
+            <div class="content">
+                Автор: <a href="{{ article.author.profile.get_absolute_url() }}"
+                          class="header">@{{ article.author.username }}</a>
+                <div class="description">
+                    <p>Дата публикации: {{ article.created_at.strftime("%H:%M %d/%m/%Y") }}</p>
+                    {% if article.created_at.strftime("%H:%M %d/%m/%Y") != article.updated_at.strftime("%H:%M %d/%m/%Y") %}
+                        <p>Дата редактирования: {{ article.updated_at.strftime("%H:%M %d/%m/%Y") }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- LIKE -->
+    <div class="ui labeled button" tabindex="0">
+        <button class="ui button {% if user in article.likes.all() %}green{% else %}red{% endif %}" id="like-article">
+            <i class="heart icon"></i> Like
+        </button>
+        <a disabled="" class="ui basic label" id="likenumber">{{ article.likes.all().count() }}</a>
+    </div>
+    <!-- COMMENTS -->
+    <div class="ui comments">
+        <h3 class="ui dividing header">Comments</h3>
+        <form class="ui reply form" method="post">
+            <h5 id="comment-type">Комментарий</h5>
+            <input hidden name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <input hidden name="article" value="{{ article.pk }}">
+            <input hidden type="text" value="add_comment" name="type">
+            <div class="field">
+                <textarea required name="body" id="body"></textarea>
+            </div>
+            <button type="submit" class="like-button">
+                <div class="ui blue labeled submit icon button">
+                    <i class="icon edit"></i> Добавить комментарий
+                </div>
+            </button>
+        </form>
+        {% if comments %}
+            {% for comment in comments recursive %}
+                <div class="comment">
+                    <a class="avatar">
+                        <img src="{{ comment.author }}">
+                    </a>
+                    <div class="content">
+                        <a class="author"
+                                href="{{ comment.author.profile.get_absolute_url() }}">{{ comment.author.username }}</a>
+                        <div class="metadata">
+                            <span class="date">{{ comment.created_at|naturaltime }}</span>
+                        </div>
+                        <div class="text">
+                            {{ comment.text }}
+                        </div>
+                        <div class="actions {{ comment.pk }}" style="!important; font-size: 1em;"
+                             id="add_comment{{ comment.pk }}">
+                            <a class="reply" id="reply" onclick="add_comment({{ comment.pk }})">Reply</a>
+                            {{ loop(comment.child.all()) }}
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        {% else %}
+            No comments.
+        {% endif %}
+
+    </div>
+    {% if user == article.author %}
+        <div class="ui large bottom fixed menu transition visible">
+            <div class="ui container" style="justify-content: center;">
+                <div class="item">
+                    <button class="ui basic button" onclick="window.location.href='update/';">
+                        <i class="icon edit"></i>
+                        Edit Article
+                    </button>
+                </div>
+                <div class="item">
+                    <form action="{{ url("article-delete", args=[article.slug]) }}" method="post">
+                        <input hidden name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                        <button onclick="return confirm('Вы действительно хотите удалить эту статью?');"
+                                class="ui basic button">
+                            <i class="icon delete"></i>
+                            Delete Article
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('#like-article').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "{{  url('article-detail', args=[article.slug]) }}",
+                data:
+                    {
+                        'type': 'article-like',
+                        'like': '{{ article.pk }}',
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                dataType: "json",
+                success: function (response) {
+                    document.getElementById('likenumber').text = response.likes;
+                    if (response.message == 'DEL') {
+                        $("#like-article").removeClass().addClass("ui button red")
+                    }
+                    else {
+                        $("#like-article").removeClass().addClass("ui button green")
+                    }
+                },
+                error: function (rs, e) {
+                    window.location.href = "{{ url('login') }}"
+                }
+            });
+        })
+
+        function add_comment(pk) {
+            if (!$('#add_com' + pk.toString()).length) {
+                $('#add_comment' + pk.toString()).prepend('<form id="add_com' + pk.toString() + '" method="post">' +
+                    '<input hidden type="text" name="csrfmiddlewaretoken" value="{{ csrf_token }}">' +
+                    '<input hidden type="text" name="type" value="add_comment">' +
+                    '<input hidden type="text" name="parent" value="' + pk.toString() + '">' +
+                    '<input type="text" name="comment" placeholder="Введите текст комментария">' +
+                    '<button hidden type="submit">Send</button></form>');
+            }
+        }
+
+    </script>
+{% endblock %}

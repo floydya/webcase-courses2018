@@ -1,0 +1,51 @@
+{% extends('base.html') %}
+
+{% block styles %}
+    .hidden-button {
+        border: 0;
+        background: transparent;
+    }
+{% endblock %}
+
+{% block cards %}
+        {{ form.errors }}
+        <form method="post" class="ui form" enctype="multipart/form-data">
+            <input hidden name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <h4 class="ui dividing header">Изменение статьи</h4>
+            <div class="field">
+                <label>Заголовок</label>
+                {{ form.title }}
+            </div>
+            <div class="field">
+                <label>Тело статьи</label>
+                {{ form.body }}
+            </div>
+            <div class="field">
+                <label>Главное изображение</label>
+                <label for="image" class="ui icon button"><i class="file icon"></i>Открыть изображение</label>
+                <input type="file" name="image" id="image" style="display: none;">
+            </div>
+            <div class="field">
+                <label>Категория</label>
+                {{ form.category }}
+            </div>
+            <div class="field">
+                <label>Тэги</label>
+                {{ form.tags }}
+            </div>
+            <div class="field">
+                <label>Добавить изображения в галлерею статьи</label>
+                <input name="gallery" type="file" size="50" accept="image/*" multiple>
+            </div>
+            <button type="submit" class="hidden-button">
+                <div class="ui button" tabindex="0">
+                    Submit
+                </div>
+            </button>
+        </form>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{ static('ckeditor/ckeditor-init.js') }}"></script>
+<script type="text/javascript" src="{{ static('ckeditor/ckeditor/ckeditor.js') }}"></script>
+{% endblock %}

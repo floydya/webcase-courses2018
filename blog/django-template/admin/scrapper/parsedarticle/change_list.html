@@ -1,0 +1,59 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, .8) url('http://i.stack.imgur.com/FhHRx.gif') 50% 50% no-repeat;
+        }
+
+        body.loading .modal {
+            overflow: hidden;
+        }
+
+        body.loading .modal {
+            display: block;
+        }
+    </style>
+    <li>
+        <a href="Javascript:void(0);" id="importlink" class="addlink"
+           title="Это может занять пару минут, не перезагружайте страницу">
+            Импорт 5-и страниц
+        </a>
+    </li>
+    <script>
+        $body = $("body");
+
+        $(document).on({
+            ajaxStart: function () {
+                $body.addClass("loading");
+            },
+            ajaxStop: function () {
+                $body.removeClass("loading");
+            }
+        });
+        $('#importlink').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "GET",
+                url: "/admin/import/",
+                data: {},
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (es, e) {
+                    window.location.reload();
+                }
+            })
+        })
+    </script>
+    <div class="modal"></div>
+    {{ block.super }}
+{% endblock %}

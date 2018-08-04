@@ -1,0 +1,157 @@
+{% extends('base.html') %}
+
+
+{% block styles %}
+    .mouse-event:hover {
+    cursor: pointer;
+    }
+{% endblock %}
+
+{% block cards %}
+    <div class="ui grid">
+        <div class="four wide column">
+            <div class="ui special cards">
+                <div class="card">
+                    <div class="blurring dimmable image">
+                        <div class="ui dimmer">
+                            <div class="content">
+                                <div class="center">
+                                    <div class="ui inverted button" id="follow_button">Follow</div>
+                                </div>
+                            </div>
+                        </div>
+                        <img src="{{ object.image.url }}">
+                    </div>
+                    <div class="content">
+                        <a class="header">{{ object.user.username }}</a>
+                        <div class="meta">
+                            <span class="date">Joined in {{ object.user.date_joined.year }}</span><br>
+                            <span class="date">Last login {{ object.user.last_login|naturaltime }}</span>
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <a {% if object.followers.count() > 0 %}onclick="$('.ui.modal.followers').modal('show');"{% endif %}>
+                            <i class="users icon"></i>
+                            <span id="follower_count">{{ object.followers.count() }}</span> followers
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="six wide column">
+            {% if object.user.articles.all() %}
+                <div class="ui large feed">
+                    <h3 class="ui header">Последние 5 статей</h3>
+                    {% for item in object.user.articles.order_by('-id')[:5] %}
+                        <div class="event mouse-event" onclick="window.location.href='{{ item.get_absolute_url() }}'">
+                            <div class="label">
+                                <img src="{{ object.image.url }}">
+                            </div>
+                            <div class="content">
+                                <div class="summary">
+                                    <a class="user">{{ object.user.username }}</a> создал(a) статью
+                                    <div class="date">
+                                        {{ item.created_at|naturalday }}
+                                    </div>
+                                </div>
+                                <div class="extra text">
+                                    {{ item.title }}
+                                </div>
+                                <div class="meta">
+                                    <a class="like">
+                                        <i class="like icon"></i> {{ item.likes.count() }} Likes
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="six wide column">
+            <div class="ui small feed">
+                <h4 class="ui header">Понравившийся контент</h4>
+                {% for liked in object.user.liked.all() %}
+                    <div class="event">
+                        <div class="content">
+                            <div class="summary">
+                                <a>{{ object.user.username }}</a> liked <a
+                                    href="{{ liked.get_absolute_url() }}">{{ liked.title[:35] }}</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="ui modal followers">
+        <div class="header">Followers</div>
+        <div class="content">
+            <div class="ui feed">
+                {% for follower in object.followers.all() %}
+                    <div class="event">
+                        <div class="label">
+                            <img src="{{ follower.profile.image.url }}">
+                        </div>
+                        <div class="content">
+                            {{ follower }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% if user == object.user %}
+        <div class="ui large bottom fixed menu transition visible">
+            <div class="ui container" style="justify-content: center;">
+                <div class="item">
+                    <button class="positive ui left floated button" onclick="window.location.href='/edit/'">Edit
+                        profile
+                    </button>
+                    <button class="circular ui right floated icon button"
+                            onclick="window.location.href='{{ url('password_change') }}'">
+                        <i class="icon settings"></i>
+                    </button>
+
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block js %}
+    {% if user != object.user %}
+        <script>
+            $('.special.cards .image').dimmer({
+                on: 'hover'
+            });
+            $('#follow_button').click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "{{  url('profile', args=[object.pk]) }}",
+                    data:
+                        {
+                            'follow': '{{ object.user.pk }}',
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                    dataType: "json",
+                    success: function (response) {
+                        document.getElementById('follower_count').innerHTML = response.followers;
+                        if (response.message) {
+                            document.getElementById('follow_button').innerHTML = 'Unfollow';
+                        }
+                        else {
+                            document.getElementById('follow_button').innerHTML = 'Follow';
+                        }
+                    },
+                    error: function (rs, e) {
+                        window.location.href = "{{ url('login') }}"
+                    }
+                });
+            })
+        </script>
+    {% endif %}
+{% endblock %}
